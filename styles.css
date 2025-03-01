@@ -1,0 +1,147 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.selection-box {
+    border: 1px dashed #2196f3;
+    background-color: rgba(33, 150, 243, 0.1);
+    position: absolute;
+    pointer-events: none;
+}
+body {
+    font-family: Arial, sans-serif;
+}
+.workspace-icon {
+    position: absolute;
+    cursor: move;
+    background-color: transparent;
+}
+.workspace-icon.selected {
+    background-color: rgba(255, 193, 7, 0.3) !important;
+    outline: 2px solid #ffc107;
+    z-index: 1000;
+}
+
+.workspace-icon:hover {
+    background-color: rgba(74, 90, 193, 0.2);
+}
+.header-panel {
+    width: 100%;
+    height: 25px;
+    background-color: #1a237e;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.menu-panel {
+    width: 100%;
+    height: 25px;
+    background-color: #283593;
+    position: fixed;
+    top: 25px;
+    left: 0;
+}
+
+.icon-panel {
+    width: 100%;
+    height: 50px;
+    position: fixed;
+    top: 50px;
+    left: 0;
+    display: flex;
+    background-color: #3949ab;
+}
+.icon-panel-left {
+    width: 200px;
+    height: 100%;
+}
+
+.icon-panel-right {
+    flex: 1;
+    height: 95%;  /* Changed from 90% to 95% */
+    border-left: 1px solid #5c6bc0;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+}
+.icon-wrapper {
+    height: 46px;  /* Increased to nearly match panel height */
+    width: 46px;   /* Kept square aspect ratio */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px;  /* Reduced padding to allow more space for icon */
+    border-radius: 4px;
+    transition: background-color 0.2s;
+    margin-right: 10px;  /* Added spacing between icons */
+}
+
+/* Remove margin from the last icon */
+.icon-wrapper:last-child {
+    margin-right: 0;
+}
+.icon-wrapper svg {
+    height: 100%;
+    width: 100%;
+    transform: scale(1.2); /* Makes the SVG content 20% larger */
+}
+.icon-wrapper:hover {
+    background-color: #4a5ac1;
+}
+.icon-wrapper svg {
+    height: 100%;
+    width: 100%;
+}
+    
+.footer-panel {
+    width: 100%;
+    height: 25px;
+    background-color: #5c6bc0;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+}
+.container {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+.workspace-panel {
+    position: fixed;
+    top: 100px;  /* 25px header + 25px menu + 50px icon panel */
+    left: 0;
+    right: 0;
+    bottom: 25px; /* space for footer */
+    background-color: #bbdefb;  /* Changed to a lighter blue */
+    overflow: auto;
+    padding: 10px;
+}
+
+/* Optional: For better scrollbar appearance */
+.workspace-panel::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+.workspace-panel::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.workspace-panel::-webkit-scrollbar-thumb {
+    background: #bbdefb;
+    border-radius: 5px;
+}
+
+.workspace-panel::-webkit-scrollbar-thumb:hover {
+    background: #90caf9;
+}
+button:hover {
+    background-color: #0056b3;
+}
