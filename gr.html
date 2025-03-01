@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplicativo de Arrastar e Soltar SVG</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f5f5f5;
+        }
+        h1 { color: #333; margin-bottom: 20px; }
+        .container { display: flex; justify-content: space-between; width: 100%; max-width: 1100px; } /* Aumentado para acomodar Painel 2 de 600px */
+        .panel { height: 300px; background-color: #fff; border: 2px dashed #ccc; border-radius: 8px; padding: 15px; box-sizing: border-box; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        #panel1 { width: 48%; } /* Painel 1 mantém proporção aproximada */
+        #panel2 { width: 600px; } /* Painel 2 fixo em 600px */
+        .panel-title { position: absolute; top: 5px; left: 10px; font-size: 14px; color: #666; }
+        .rect-container { cursor: grab; position: absolute; display: flex; align-items: center; justify-content: center; }
+        #panel1 .rect-container { width: 50px; height: 50px; } /* Fixar Painel 1 em 50x50px */
+        #panel2 .rect-container { width: 600px; height: 50px; } /* Fixar Painel 2 em 600x50px */
+        .rect-container:active { cursor: grabbing; }
+        .instructions { margin-top: 20px; padding: 15px; background-color: #e6f7ff; border-radius: 8px; max-width: 1100px; width: 100%; box-sizing: border-box; }
+        svg { width: 100%; height: 100%; }
+    </style>
+</head>
+<body>
+    <h1>Aplicativo de Arrastar e Soltar SVG</h1>
+    <div class="container">
+        <div id="panel1" class="panel" ondragover="allowDrop(event)" ondrop="drop(event)">
+            <div class="panel-title">Painel 1 (Original - 50x50px)</div>
+            <div id="dragElement" class="rect-container" draggable="true" ondragstart="drag(event)">
+                <svg width="50" height="50" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+                    <title>Add rung</title>
+                    <line x1="12" y1="16" x2="12" y2="64" stroke="#3498db" stroke-width="8"></line>
+                    <line x1="8" y1="40" x2="68" y2="40" stroke="#3498db" stroke-width="8"></line>
+                    <line x1="68" y1="16" x2="68" y2="64" stroke="#3498db" stroke-width="8"></line>
+                </svg>
+            </div>
+        </div>
+        <div id="panel2" class="panel" ondragover="allowDrop(event)" ondrop="drop(event)">
+            <div class="panel-title">Painel 2 (Destino - 600x50px)</div>
+        </div>
+    </div>
+    <div class="instructions">
+        <h3>Instruções:</h3>
+        <p>1. Arraste o ícone do Painel 1 para o Painel 2.</p>
+        <p>2. Ao soltar no Painel 2, será gerada uma única cópia fixa de 600x50px, arrastável apenas dentro do Painel 2, sem gerar mais cópias.</p>
+    </div>
+
+    <script>
+        let isDropped = false; // Flag para controlar se o ícone já foi solto no Painel 2
+
+        function allowDrop(ev) {
+            ev.preventDefault();
+        }
+        
+        function drag(ev) {
+            if (!isDropped) { // Só permite arrastar se ainda não foi solto
+                ev.dataTransfer.setData("text", ev.target.id);
+            }
+        }
+        
+        function drop(ev) {
+            ev.preventDefault();
+            const data = ev.dataTransfer.getData("text");
+            
+            if (ev.currentTarget.id === "panel2" && !isDropped) {
+                const clone = document.createElement("div");
+                clone.className = "rect-container";
+                clone.draggable = true;
+                clone.setAttribute("ondragstart", "dragInsidePanel2(event)");
+                clone.id = "clone-" + Math.random().toString(36).substr(2, 9);
+                
+                clone.innerHTML = `
+                    <svg width="600" height="50" viewBox="0 0 600 50" xmlns="http://www.w3.org/2000/svg">
+                        <title>Add rung</title>
+                        <line x1="0" y1="0" x2="0" y2="50" stroke="#e74c3c" stroke-width="8"></line>
+                        <line x1="0" y1="25" x2="600" y2="25" stroke="#e74c3c" stroke-width="8"></line>
+                        <line x1="600" y1="0" x2="600" y2="50" stroke="#e74c3c" stroke-width="8"></line>
+                    </svg>
+                `;
+                
+                // Posicionar a cópia no ponto de drop dentro do Painel 2
+                const panel2Rect = ev.currentTarget.getBoundingClientRect();
+                const offsetX = ev.clientX - panel2Rect.left;
+                const offsetY = ev.clientY - panel2Rect.top;
+                clone.style.left = `${offsetX - 300}px`; // Centralizar horizontalmente (600/2 = 300)
+                clone.style.top = `${offsetY - 25}px`; // Centralizar verticalmente (50/2 = 25)
+
+                ev.currentTarget.appendChild(clone);
+                
+                // Desabilitar o arraste do ícone original no Painel 1
+                const original = document.getElementById("dragElement");
+                original.draggable = false;
+                isDropped = true; // Marcar que o ícone foi solto
+            }
+        }
+        
+        function dragInsidePanel2(ev) {
+            ev.dataTransfer.setData("text", ev.target.id);
+        }
+        
+        function dropInsidePanel2(ev) {
+            ev.preventDefault();
+            const data = ev.dataTransfer.getData("text");
+            const draggedElement = document.getElementById(data);
+            if (draggedElement) {
+                const panel2Rect = document.getElementById('panel2').getBoundingClientRect();
+                const offsetX = ev.clientX - panel2Rect.left;
+                const offsetY = ev.clientY - panel2Rect.top;
+                
+                // Limitar o movimento dentro do Painel 2
+                const maxX = panel2Rect.width - draggedElement.offsetWidth;
+                const maxY = panel2Rect.height - draggedElement.offsetHeight;
+                
+                draggedElement.style.left = `${Math.max(0, Math.min(offsetX - 300, maxX))}px`; // Centralizar horizontalmente (600/2 = 300)
+                draggedElement.style.top = `${Math.max(0, Math.min(offsetY - 25, maxY))}px`; // Centralizar verticalmente (50/2 = 25)
+            }
+        }
+    </script>
+</body>
+</html>
