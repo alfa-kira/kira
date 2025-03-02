@@ -3,29 +3,13 @@
     padding: 0;
     box-sizing: border-box;
 }
-.selection-box {
-    border: 1px dashed #2196f3;
-    background-color: rgba(33, 150, 243, 0.1);
-    position: absolute;
-    pointer-events: none;
-}
+
 body {
     font-family: Arial, sans-serif;
-}
-.workspace-icon {
-    position: absolute;
-    cursor: move;
-    background-color: transparent;
-}
-.workspace-icon.selected {
-    background-color: rgba(255, 193, 7, 0.3) !important;
-    outline: 2px solid #ffc107;
-    z-index: 1000;
+    overflow: hidden; /* Previne rolagem indesejada */
 }
 
-.workspace-icon:hover {
-    background-color: rgba(74, 90, 193, 0.2);
-}
+/* Painel superior */
 .header-panel {
     width: 100%;
     height: 25px;
@@ -33,6 +17,7 @@ body {
     position: fixed;
     top: 0;
     left: 0;
+    z-index: 100;
 }
 
 .menu-panel {
@@ -42,8 +27,10 @@ body {
     position: fixed;
     top: 25px;
     left: 0;
+    z-index: 100;
 }
 
+/* Painel de ícones */
 .icon-panel {
     width: 100%;
     height: 50px;
@@ -52,7 +39,10 @@ body {
     left: 0;
     display: flex;
     background-color: #3949ab;
+    z-index: 100;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
+
 .icon-panel-left {
     width: 200px;
     height: 100%;
@@ -60,71 +50,56 @@ body {
 
 .icon-panel-right {
     flex: 1;
-    height: 95%;  /* Changed from 90% to 95% */
+    height: 95%;
     border-left: 1px solid #5c6bc0;
     display: flex;
     align-items: center;
     padding: 0 10px;
+    overflow-x: auto; /* Permite rolar horizontalmente se houver muitos ícones */
 }
+
+/* Ícones */
 .icon-wrapper {
-    height: 46px;  /* Increased to nearly match panel height */
-    width: 46px;   /* Kept square aspect ratio */
+    height: 46px;
+    width: 46px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2px;  /* Reduced padding to allow more space for icon */
+    padding: 2px;
     border-radius: 4px;
     transition: background-color 0.2s;
-    margin-right: 10px;  /* Added spacing between icons */
+    margin-right: 10px;
+    user-select: none; /* Previne seleção de texto */
 }
 
-/* Remove margin from the last icon */
 .icon-wrapper:last-child {
     margin-right: 0;
 }
+
 .icon-wrapper svg {
     height: 100%;
     width: 100%;
-    transform: scale(1.2); /* Makes the SVG content 20% larger */
+    transform: scale(1.2);
 }
+
 .icon-wrapper:hover {
     background-color: #4a5ac1;
 }
-.icon-wrapper svg {
-    height: 100%;
-    width: 100%;
-}
-    
-.footer-panel {
-    width: 100%;
-    height: 25px;
-    background-color: #5c6bc0;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-}
-.container {
-    max-width: 800px;
-    margin: 50px auto;
-    padding: 20px;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    text-align: center;
-}
+
+/* Área de trabalho */
 .workspace-panel {
     position: fixed;
-    top: 100px;  /* 25px header + 25px menu + 50px icon panel */
+    top: 100px;
     left: 0;
     right: 0;
-    bottom: 25px; /* space for footer */
-    background-color: #bbdefb;  /* Changed to a lighter blue */
+    bottom: 25px;
+    background-color: #bbdefb;
     overflow: auto;
     padding: 10px;
+    z-index: 50;
 }
 
-/* Optional: For better scrollbar appearance */
 .workspace-panel::-webkit-scrollbar {
     width: 10px;
     height: 10px;
@@ -142,6 +117,58 @@ body {
 .workspace-panel::-webkit-scrollbar-thumb:hover {
     background: #90caf9;
 }
+
+/* Ícones no workspace */
+.workspace-icon {
+    position: absolute;
+    cursor: move;
+    background-color: transparent;
+    z-index: 60;
+    transition: background-color 0.2s, outline 0.2s;
+    border-radius: 4px;
+}
+
+.workspace-icon:hover {
+    background-color: rgba(74, 90, 193, 0.2);
+}
+
+.workspace-icon.selected {
+    background-color: rgba(255, 193, 7, 0.3) !important;
+    outline: 2px solid #ffc107;
+    z-index: 70; /* Componentes selecionados ficam acima dos outros */
+}
+
+/* Caixa de seleção */
+.selection-box {
+    border: 1px dashed #2196f3;
+    background-color: rgba(33, 150, 243, 0.1);
+    position: absolute;
+    pointer-events: none;
+    z-index: 55;
+}
+
+/* Rodapé */
+.footer-panel {
+    width: 100%;
+    height: 25px;
+    background-color: #5c6bc0;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+}
+
+/* Outros elementos */
+.container {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
 button:hover {
     background-color: #0056b3;
 }
